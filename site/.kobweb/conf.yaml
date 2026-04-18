@@ -1,0 +1,14 @@
+site:
+  title: "ThePrice"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/kotlin-webpack/js/developmentExecutable/page.js"
+      api: "build/libs/page.jar"
+    prod:
+      script: "build/kotlin-webpack/js/productionExecutable/page.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
