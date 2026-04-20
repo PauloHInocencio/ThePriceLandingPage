@@ -49,14 +49,17 @@ This is a Kotlin Multiplatform web application using Kobweb (a Compose HTML fram
 ```
 components/
 ├── sections/     # Page-level sections (NavHeader, Footer)
-└── widget/       # Reusable widgets (LoadingButton)
+└── widget/       # Reusable widgets (LoadingButton with CircularLoadingIndicator)
 ```
+
+Private helper components (like `CircularLoadingIndicator`) are defined in the same file as their parent and marked `private`.
 
 **Internationalization Pattern:**
 - Sealed class `Strings` with language implementations (`English`, `PortugueseBR`)
 - `Language` enum tracks current language
 - `LanguageStorage` persists to browser localStorage with key `page:language`
 - Extension function `Language.strings()` retrieves translations
+- Supports dynamic text (e.g., `registerButton` vs `registeringButton` for loading states)
 
 **Theme System:**
 - `TesterColors` object in `SiteTheme.kt` defines brand colors
@@ -67,6 +70,7 @@ components/
 - Local component state using `remember` and `mutableStateOf`
 - No global state management library
 - Parent composables hold state and pass callbacks to children
+- Async operations tracked with boolean flags (e.g., `isSubmitting` in form)
 
 ## Project Structure
 
@@ -101,7 +105,7 @@ site/src/jsMain/kotlin/io/noartcode/theprice/page/
 
 ### Adding CSS Animations
 
-Define keyframes in `AppStyles.kt`:
+Define keyframes in `AppStyles.kt` (example: `SpinKeyframes` for LoadingButton spinner):
 ```kotlin
 val SpinKeyframes = Keyframes {
     from { Modifier.rotate(0.deg) }
@@ -109,7 +113,7 @@ val SpinKeyframes = Keyframes {
 }
 ```
 
-Apply with:
+Apply in components with:
 ```kotlin
 .animation(
     SpinKeyframes.toAnimation(
@@ -119,6 +123,8 @@ Apply with:
     )
 )
 ```
+
+**Used in:** `CircularLoadingIndicator` component in LoadingButton.kt
 
 ### Creating Reusable Components
 
@@ -154,6 +160,31 @@ val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$".toRegex()
 val isValidEmail = email.matches(emailRegex)
 ```
 
+### LoadingButton Pattern
+
+The `LoadingButton` component demonstrates async operation UI pattern:
+```kotlin
+var isSubmitting by remember { mutableStateOf(false) }
+
+LoadingButton(
+    text = if (isSubmitting) strings.registeringButton else strings.registerButton,
+    onClick = {
+        isSubmitting = true
+        // API call here
+        // Set isSubmitting = false when done
+    },
+    isEnabled = isSubmissionEnabled,
+    isLoading = isSubmitting
+)
+```
+
+**Implementation details:**
+- Shows circular spinner when `isLoading = true`
+- Spinner appears alongside text (not replacing it)
+- Uses `SpinKeyframes` from AppStyles.kt for rotation animation
+- 24px spinner with white border and thePriceBlue accent
+- Conditional text based on loading state via i18n strings
+
 ## Current Application State
 
 **ThePrice Landing Page**: Tester registration form for a cost-of-living tracking app.
@@ -164,10 +195,11 @@ val isValidEmail = email.matches(emailRegex)
 - Language switcher (English/Portuguese BR)
 - Platform selector (Android/iOS/Both)
 - Dark-themed UI with custom color palette
+- LoadingButton component with circular spinner animation
+- Loading state management with `isSubmitting` flag
 
 **Not Yet Implemented:**
-- Backend integration (form submission onClick is empty)
-- LoadingButton.kt has empty implementation
+- Backend integration (API call placeholder in form submission)
 
 ## Configuration Files
 
