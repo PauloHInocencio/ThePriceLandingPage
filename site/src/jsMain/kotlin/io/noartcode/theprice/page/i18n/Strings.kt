@@ -6,6 +6,7 @@ sealed class Strings {
     abstract val namePlaceholder: String
     abstract val emailPlaceholder: String
     abstract val registerButton: String
+    abstract val registeringButton: String
     abstract val footerTagline: String
     abstract val platformAndroid: String
     abstract val platformIOS: String
@@ -19,6 +20,7 @@ sealed class Strings {
         override val namePlaceholder = "Your name"
         override val emailPlaceholder = "you@email.com"
         override val registerButton = "Register me"
+        override val registeringButton = "Registering..."
         override val footerTagline = "ThePrice helps you understand your cost of living by tracking your monthly bills."
         override val platformAndroid = "Android"
         override val platformIOS = "iOS"
@@ -33,6 +35,7 @@ sealed class Strings {
         override val namePlaceholder = "Seu nome"
         override val emailPlaceholder = "voce@email.com"
         override val registerButton = "Registrar-me"
+        override val registeringButton = "Registrando..."
         override val footerTagline = "ThePrice te ajuda entender seu custo de vida rastreando suas contas mensais."
         override val platformAndroid = "Android"
         override val platformIOS = "iOS"

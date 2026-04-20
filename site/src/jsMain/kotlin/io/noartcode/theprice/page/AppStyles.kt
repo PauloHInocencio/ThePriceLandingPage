@@ -19,6 +19,7 @@ import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.theme.modifyStyleBase
 import com.varabyte.kobweb.compose.css.Transition
 import com.varabyte.kobweb.silk.style.addVariantBase
+import com.varabyte.kobweb.silk.style.animation.Keyframes
 import io.noartcode.theprice.page.PlatformSelectorButtonStyle
 import org.jetbrains.compose.web.css.*
 
@@ -142,4 +143,13 @@ val PlatformSelectedVariant = CssStyle.base {
     Modifier
         .backgroundColor(TesterColors.thePriceBlue)
         .color(Colors.White)
+}
+
+val SpinKeyframes = Keyframes {
+    from {
+        Modifier.rotate(0.deg)
+    }
+    to {
+        Modifier.rotate(360.deg)
+    }
 }

@@ -28,12 +28,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.icons.fa.FaFlask
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.toModifier
-import io.noartcode.theprice.page.BlueButtonVariant
 import io.noartcode.theprice.page.FormInputStyle
 import io.noartcode.theprice.page.PlatformSelectedVariant
 import io.noartcode.theprice.page.PlatformSelectorButtonStyle
@@ -43,6 +41,7 @@ import io.noartcode.theprice.page.TesterColors
 import io.noartcode.theprice.page.TesterPageStyle
 import io.noartcode.theprice.page.components.sections.Footer
 import io.noartcode.theprice.page.components.sections.NavHeader
+import io.noartcode.theprice.page.components.widget.LoadingButton
 import io.noartcode.theprice.page.i18n.Language
 import io.noartcode.theprice.page.i18n.LanguageStorage
 import io.noartcode.theprice.page.i18n.Platform
@@ -55,7 +54,6 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Input
-import org.jetbrains.compose.web.dom.Text
 
 @Page
 @Composable
@@ -74,7 +72,9 @@ fun HomePage() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
-    val isFormValid = name.isNotBlank() && emailRegex.matches(email)
+    var isSubmitting by remember { mutableStateOf(false) }
+    val isSubmissionEnabled = name.isNotBlank() && emailRegex.matches(email) && !isSubmitting
+
 
     Box(
         TesterPageStyle.toModifier(),
@@ -93,7 +93,13 @@ fun HomePage() {
                 onNameChange = { name = it },
                 email = email,
                 onEmailChange = { email = it },
-                isFormValid = isFormValid
+                isSubmissionEnabled = isSubmissionEnabled,
+                onSubmit = {
+                    isSubmitting = true
+
+                    // API call here
+                },
+                isSubmitting = isSubmitting
             )
             Footer(
                 strings = strings
@@ -112,7 +118,9 @@ private fun ColumnScope.TesterForm(
     onNameChange : (String) -> Unit,
     email:String,
     onEmailChange : (String) -> Unit,
-    isFormValid: Boolean
+    isSubmissionEnabled: Boolean,
+    onSubmit: () -> Unit,
+    isSubmitting: Boolean,
 ) {
     Box(
         Modifier.fillMaxWidth()
@@ -169,13 +177,12 @@ private fun ColumnScope.TesterForm(
                         placeholder(strings.emailPlaceholder)
                     }
                 )
-                Button(
-                    onClick = { },
-                    variant = BlueButtonVariant,
-                    enabled = isFormValid
-                ) {
-                    Text(strings.registerButton)
-                }
+                LoadingButton(
+                    text = if (isSubmitting) strings.registeringButton else strings.registerButton,
+                    onClick = onSubmit,
+                    isEnabled = isSubmissionEnabled,
+                    isLoading = isSubmitting,
+                )
             }
         }
     }
@@ -219,7 +226,7 @@ private fun PlatformSelector(
 private fun TestFlaskIcon() {
     Box(
         Modifier
-            .borderRadius(100.px)
+            .borderRadius(50.px)
             .border(
                 width = 1.px,
                 style = LineStyle.Solid,
