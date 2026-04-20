@@ -39,6 +39,7 @@ import io.noartcode.theprice.page.PlatformSelectorContainerStyle
 import io.noartcode.theprice.page.TesterCardStyle
 import io.noartcode.theprice.page.TesterColors
 import io.noartcode.theprice.page.TesterPageStyle
+import io.noartcode.theprice.page.api.ThePriceApi
 import io.noartcode.theprice.page.components.sections.Footer
 import io.noartcode.theprice.page.components.sections.NavHeader
 import io.noartcode.theprice.page.components.widget.LoadingButton
@@ -48,6 +49,8 @@ import io.noartcode.theprice.page.i18n.Platform
 import io.noartcode.theprice.page.i18n.Strings
 import io.noartcode.theprice.page.i18n.displayName
 import io.noartcode.theprice.page.i18n.strings
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.LineStyle
@@ -66,7 +69,7 @@ fun HomePage() {
     LaunchedEffect(currentLanguage) {
         LanguageStorage.save(currentLanguage)
     }
-
+    val api = remember { ThePriceApi() }
     val emailRegex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
     val strings = currentLanguage.strings()
     var name by remember { mutableStateOf("") }
@@ -74,6 +77,7 @@ fun HomePage() {
     var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
     var isSubmitting by remember { mutableStateOf(false) }
     val isSubmissionEnabled = name.isNotBlank() && emailRegex.matches(email) && !isSubmitting
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
 
     Box(
@@ -95,9 +99,24 @@ fun HomePage() {
                 onEmailChange = { email = it },
                 isSubmissionEnabled = isSubmissionEnabled,
                 onSubmit = {
-                    isSubmitting = true
+                    MainScope().launch {
+                        isSubmitting = true
+                        val result = api.submitTesterSignup(
+                            email = email,
+                            name = name,
+                            platform = selectedPlatform
+                        )
 
-                    // API call here
+                        result.fold(
+                            onSuccess = {
+                                isSubmitting = false
+                            },
+                            onFailure = { e ->
+                                isSubmitting = false
+                                errorMessage = e.message ?: "Something went wrong!"
+                            }
+                        )
+                    }
                 },
                 isSubmitting = isSubmitting
             )
