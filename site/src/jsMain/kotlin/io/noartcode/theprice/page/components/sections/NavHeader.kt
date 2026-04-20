@@ -1,176 +1,113 @@
 package io.noartcode.theprice.page.components.sections
 
-import androidx.compose.runtime.*
-import com.varabyte.kobweb.browser.dom.ElementTarget
-import com.varabyte.kobweb.compose.css.functions.clamp
+import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.FontSize
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
-import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.display
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.opacity
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.paddingInline
+import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.icons.CloseIcon
-import com.varabyte.kobweb.silk.components.icons.HamburgerIcon
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
-import com.varabyte.kobweb.silk.components.icons.SunIcon
-import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
-import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
-import com.varabyte.kobweb.silk.components.overlay.Overlay
-import com.varabyte.kobweb.silk.components.overlay.OverlayVars
-import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
-import com.varabyte.kobweb.silk.components.overlay.Tooltip
-import com.varabyte.kobweb.silk.style.CssStyle
-import com.varabyte.kobweb.silk.style.animation.Keyframes
-import com.varabyte.kobweb.silk.style.animation.toAnimation
-import com.varabyte.kobweb.silk.style.base
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
-import com.varabyte.kobweb.silk.style.toModifier
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import org.jetbrains.compose.web.css.*
-import io.noartcode.theprice.page.components.widgets.IconButton
-import io.noartcode.theprice.page.toSitePalette
-
-val NavHeaderStyle = CssStyle.base {
-    Modifier.fillMaxWidth().padding(1.cssRem)
-}
+import io.noartcode.theprice.page.TesterColors
+import io.noartcode.theprice.page.i18n.Language
+import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.px
 
 @Composable
-private fun NavLink(path: String, text: String) {
-    Link(path, text, variant = UndecoratedLinkVariant.then(UncoloredLinkVariant))
-}
-
-@Composable
-private fun MenuItems() {
-    NavLink("/", "Home")
-    NavLink("/about", "About")
-}
-
-@Composable
-private fun ColorModeButton() {
-    var colorMode by ColorMode.currentState
-    IconButton(onClick = { colorMode = colorMode.opposite },) {
-        if (colorMode.isLight) MoonIcon() else SunIcon()
-    }
-    Tooltip(ElementTarget.PreviousSibling, "Toggle color mode", placement = PopupPlacement.BottomRight)
-}
-
-@Composable
-private fun HamburgerButton(onClick: () -> Unit) {
-    IconButton(onClick) {
-        HamburgerIcon()
-    }
-}
-
-@Composable
-private fun CloseButton(onClick: () -> Unit) {
-    IconButton(onClick) {
-        CloseIcon()
-    }
-}
-
-val SideMenuSlideInAnim = Keyframes {
-    from {
-        Modifier.translateX(100.percent)
-    }
-
-    to {
-        Modifier
-    }
-}
-
-// Note: When the user closes the side menu, we don't immediately stop rendering it (at which point it would disappear
-// abruptly). Instead, we start animating it out and only stop rendering it when the animation is complete.
-enum class SideMenuState {
-    CLOSED,
-    OPEN,
-    CLOSING;
-
-    fun close() = when (this) {
-        CLOSED -> CLOSED
-        OPEN -> CLOSING
-        CLOSING -> CLOSING
-    }
-}
-
-@Composable
-fun NavHeader() {
-    Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
-        Link("https://kobweb.varabyte.com") {
-            // Block display overrides inline display of the <img> tag, so it calculates centering better
-            Image("/kobweb-logo.png", "Kobweb Logo", Modifier.height(2.cssRem).display(DisplayStyle.Block))
-        }
-
-        Spacer()
-
-        Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
-            MenuItems()
-            ColorModeButton()
-        }
-
+fun NavHeader(
+    currentLanguage: Language,
+    onLanguageChange: (Language) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier.fillMaxWidth().padding(1.5.cssRem),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
-            Modifier
-                .fontSize(1.5.cssRem)
-                .gap(1.cssRem)
-                .displayUntil(Breakpoint.MD),
+            modifier = Modifier
+                .maxWidth(1000.px)  // Container max width
+                .fillMaxWidth()
+                .paddingInline(2.cssRem),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
-
-            ColorModeButton()
-            HamburgerButton(onClick =  { menuState = SideMenuState.OPEN })
-
-            if (menuState != SideMenuState.CLOSED) {
-                SideMenu(
-                    menuState,
-                    close = { menuState = menuState.close() },
-                    onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
-                )
-            }
+            LogoContainer()
+            Spacer()
+            LanguageToggle(currentLanguage, onLanguageChange)
         }
     }
 }
 
 @Composable
-private fun SideMenu(menuState: SideMenuState, close: () -> Unit, onAnimationEnd: () -> Unit) {
-    Overlay(
-        Modifier
-            .setVariable(OverlayVars.BackgroundColor, Colors.Transparent)
-            .onClick { close() }
+private fun LogoContainer() {
+    Row(
+        Modifier.gap(0.5.cssRem),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        key(menuState) { // Force recompute animation parameters when close button is clicked
-            Column(
-                Modifier
-                    .fillMaxHeight()
-                    .width(clamp(8.cssRem, 33.percent, 10.cssRem))
-                    .align(Alignment.CenterEnd)
-                    // Close button will appear roughly over the hamburger button, so the user can close
-                    // things without moving their finger / cursor much.
-                    .padding(top = 1.cssRem, leftRight = 1.cssRem)
-                    .gap(1.5.cssRem)
-                    .backgroundColor(ColorMode.current.toSitePalette().nearBackground)
-                    .animation(
-                        SideMenuSlideInAnim.toAnimation(
-                            duration = 200.ms,
-                            timingFunction = if (menuState == SideMenuState.OPEN) AnimationTimingFunction.EaseOut else AnimationTimingFunction.EaseIn,
-                            direction = if (menuState == SideMenuState.OPEN) AnimationDirection.Normal else AnimationDirection.Reverse,
-                            fillMode = AnimationFillMode.Forwards
-                        )
-                    )
-                    .borderRadius(topLeft = 2.cssRem)
-                    .onClick { it.stopPropagation() }
-                    .onAnimationEnd { onAnimationEnd() },
-                horizontalAlignment = Alignment.End
-            ) {
-                CloseButton(onClick = { close() })
-                Column(Modifier.padding(right = 0.75.cssRem).gap(1.5.cssRem).fontSize(1.4.cssRem), horizontalAlignment = Alignment.End) {
-                    MenuItems()
-                }
+        Image(
+            src = "pric-logo.png",
+            modifier = Modifier.size(48.px)
+        )
+        SpanText(
+            text = "ThePrice",
+            modifier = Modifier
+                .fontSize(1.5.cssRem)
+                .fontWeight(FontWeight.SemiBold)
+                .color(TesterColors.thePriceBlue)
+        )
+    }
+}
+
+@Composable
+private fun LanguageToggle(
+    currentLanguage: Language,
+    onLanguageChange: (Language) -> Unit,
+) {
+    Row(
+        Modifier.gap(0.5.cssRem),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Language.all.forEachIndexed { index, lang ->
+            if (index > 0) {
+                SpanText(" | ", Modifier.color(Colors.Gray))
             }
+            SpanText(
+                lang.displayName,
+                Modifier
+                    .displayIfAtLeast(Breakpoint.MD)
+                    .color(if (lang == currentLanguage) TesterColors.thePriceBlue else Colors.Gray)
+                    .cursor(Cursor.Pointer)
+                    .onClick { onLanguageChange(lang) }
+            )
+            SpanText(
+                lang.flag,
+                Modifier
+                    .fontSize(FontSize.XXLarge)
+                    .displayUntil(Breakpoint.MD)
+                    .opacity(if (lang == currentLanguage) 1.0 else 0.4)
+                    .cursor(Cursor.Pointer)
+                    .onClick { onLanguageChange(lang) }
+            )
         }
     }
 }

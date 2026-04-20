@@ -1,143 +1,239 @@
 package io.noartcode.theprice.page.pages
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.css.StyleVariable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
-import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.modifiers.background
+import com.varabyte.kobweb.compose.ui.modifiers.border
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.data.add
-import com.varabyte.kobweb.core.init.InitRoute
-import com.varabyte.kobweb.core.init.InitRouteContext
-import com.varabyte.kobweb.core.layout.Layout
-import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
-import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.icons.fa.FaFlask
+import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.style.CssStyle
-import com.varabyte.kobweb.silk.style.base
-import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
-import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import com.varabyte.kobweb.silk.theme.colors.ColorPalettes
+import io.noartcode.theprice.page.BlueButtonVariant
+import io.noartcode.theprice.page.FormInputStyle
+import io.noartcode.theprice.page.PlatformSelectedVariant
+import io.noartcode.theprice.page.PlatformSelectorButtonStyle
+import io.noartcode.theprice.page.PlatformSelectorContainerStyle
+import io.noartcode.theprice.page.TesterCardStyle
+import io.noartcode.theprice.page.TesterColors
+import io.noartcode.theprice.page.TesterPageStyle
+import io.noartcode.theprice.page.components.sections.Footer
+import io.noartcode.theprice.page.components.sections.NavHeader
+import io.noartcode.theprice.page.i18n.Language
+import io.noartcode.theprice.page.i18n.LanguageStorage
+import io.noartcode.theprice.page.i18n.Platform
+import io.noartcode.theprice.page.i18n.Strings
+import io.noartcode.theprice.page.i18n.displayName
+import io.noartcode.theprice.page.i18n.strings
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.attributes.placeholder
+import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.vh
-import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.Text
-import io.noartcode.theprice.page.HeadlineTextStyle
-import io.noartcode.theprice.page.SubheadlineTextStyle
-import io.noartcode.theprice.page.components.layouts.PageLayoutData
-import io.noartcode.theprice.page.toSitePalette
-
-// Container that has a tagline and grid on desktop, and just the tagline on mobile
-val HeroContainerStyle = CssStyle {
-    base { Modifier.fillMaxWidth().gap(2.cssRem) }
-    Breakpoint.MD { Modifier.margin { top(20.vh) } }
-}
-
-// A demo grid that appears on the homepage because it looks good
-val HomeGridStyle = CssStyle.base {
-    Modifier
-        .gap(0.5.cssRem)
-        .width(70.cssRem)
-        .height(18.cssRem)
-}
-
-private val GridCellColorVar by StyleVariable<Color>()
-val HomeGridCellStyle = CssStyle.base {
-    Modifier
-        .backgroundColor(GridCellColorVar.value())
-        .boxShadow(blurRadius = 0.6.cssRem, color = GridCellColorVar.value())
-        .borderRadius(1.cssRem)
-}
-
-@Composable
-private fun GridCell(color: Color, row: Int, column: Int, width: Int? = null, height: Int? = null) {
-    Div(
-        HomeGridCellStyle.toModifier()
-            .setVariable(GridCellColorVar, color)
-            .gridItem(row, column, width, height)
-            .toAttrs()
-    )
-}
-
-
-@InitRoute
-fun initHomePage(ctx: InitRouteContext) {
-    ctx.data.add(PageLayoutData("Home"))
-}
 
 @Page
-@Layout(".components.layouts.PageLayout")
 @Composable
 fun HomePage() {
-    Row(HeroContainerStyle.toModifier()) {
-        Box {
-            val sitePalette = ColorMode.current.toSitePalette()
 
-            Column(Modifier.gap(2.cssRem)) {
-                Div(HeadlineTextStyle.toAttrs()) {
-                    SpanText(
-                        "Use this template as your starting point for ", Modifier.color(
-                            when (ColorMode.current) {
-                                ColorMode.LIGHT -> Colors.Black
-                                ColorMode.DARK -> Colors.White
-                            }
-                        )
-                    )
-                    SpanText(
-                        "Kobweb",
-                        Modifier
-                            .color(sitePalette.brand.accent)
-                            // Use a shadow so this light-colored word is more visible in light mode
-                            .textShadow(0.px, 0.px, blurRadius = 0.5.cssRem, color = Colors.Gray)
-                    )
-                }
+    var currentLanguage by remember {
+        mutableStateOf(LanguageStorage.load() ?: Language.English)
+    }
 
-                Div(SubheadlineTextStyle.toAttrs()) {
-                    SpanText("You can read the ")
-                    Link("/about", "About")
-                    SpanText(" page for more information.")
-                }
+    LaunchedEffect(currentLanguage) {
+        LanguageStorage.save(currentLanguage)
+    }
 
-                val ctx = rememberPageContext()
-                Button(onClick = {
-                    // Change this click handler with your call-to-action behavior
-                    // here. Link to an order page? Open a calendar UI? Play a movie?
-                    // Up to you!
-                    ctx.router.tryRoutingTo("/about")
-                }, colorPalette = ColorPalettes.Blue) {
-                    Text("This could be your CTA")
-                }
-            }
-        }
+    val strings = currentLanguage.strings()
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
+    val isFormValid = name.isNotBlank() && email.contains("@")
 
-        Div(
-            HomeGridStyle
-            .toModifier()
-            .displayIfAtLeast(Breakpoint.MD)
-            .grid {
-                rows { repeat(3) { size(1.fr) } }
-                columns { repeat(5) { size(1.fr) } }
-            }
-            .toAttrs()
-        ) {
-            val sitePalette = ColorMode.current.toSitePalette()
-            GridCell(sitePalette.brand.primary, 1, 1, 2, 2)
-            GridCell(ColorPalettes.Monochrome._600, 1, 3)
-            GridCell(ColorPalettes.Monochrome._100, 1, 4, width = 2)
-            GridCell(sitePalette.brand.accent, 2, 3, width = 2)
-            GridCell(ColorPalettes.Monochrome._300, 2, 5)
-            GridCell(ColorPalettes.Monochrome._800, 3, 1, width = 5)
+    Box(
+        TesterPageStyle.toModifier(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(Modifier.fillMaxSize()) {
+            NavHeader(
+                currentLanguage = currentLanguage,
+                onLanguageChange = { currentLanguage = it }
+            )
+            TesterForm(
+                strings = strings,
+                selectedPlatform = selectedPlatform,
+                onPlatformChange = { selectedPlatform = it },
+                name = name,
+                onNameChange = { name = it },
+                email = email,
+                onEmailChange = { email = it },
+                isFormValid = isFormValid
+            )
+            Footer(
+                strings = strings
+            )
         }
     }
 }
+
+
+@Composable
+private fun ColumnScope.TesterForm(
+    strings: Strings,
+    selectedPlatform: Platform,
+    onPlatformChange: (Platform) -> Unit,
+    name:String,
+    onNameChange : (String) -> Unit,
+    email:String,
+    onEmailChange : (String) -> Unit,
+    isFormValid: Boolean
+) {
+    Box(
+        Modifier.fillMaxWidth()
+            .weight(1)
+            .padding(2.cssRem),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(TesterCardStyle.toModifier().gap(2.cssRem)) {
+            Row(
+                Modifier.gap(1.cssRem),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TestFlaskIcon()
+                SpanText(
+                    text = strings.becomeATester,
+                    Modifier
+                        .fontSize(1.5.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(Colors.LightGray)
+                )
+            }
+
+            SpanText(
+                strings.signUpDescription,
+                Modifier.color(TesterColors.textGray)
+            )
+
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .gap(1.cssRem),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                PlatformSelector(
+                    selectedPlatform = selectedPlatform,
+                    onPlatformChange = { onPlatformChange(it) },
+                    strings = strings
+                )
+
+                Input(
+                    type = InputType.Text,
+                    attrs = FormInputStyle.toModifier().toAttrs {
+                        value(name)
+                        onInput { onNameChange(it.value) }
+                        placeholder(strings.namePlaceholder)
+                    }
+                )
+                Input(
+                    type = InputType.Email,
+                    attrs = FormInputStyle.toModifier().toAttrs {
+                        value(email)
+                        onInput { onEmailChange(it.value) }
+                        placeholder(strings.emailPlaceholder)
+                    }
+                )
+                Button(
+                    onClick = { },
+                    variant = BlueButtonVariant,
+                    enabled = isFormValid
+                ) {
+                    Text(strings.registerButton)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlatformSelector(
+    selectedPlatform: Platform,
+    onPlatformChange: (Platform) -> Unit,
+    strings: Strings,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        PlatformSelectorContainerStyle.toModifier().then(modifier)
+    ) {
+        Platform.all.forEachIndexed { index, platform ->
+            val isSelected = platform == selectedPlatform
+            val isLast = index == Platform.all.size - 1
+            Box(
+                PlatformSelectorButtonStyle
+                    .toModifier()
+                    .then(if (isSelected) PlatformSelectedVariant.toModifier() else Modifier)
+                    .then(if (!isLast) Modifier
+                        .border(
+                            width = 1.px,
+                            style = LineStyle.Solid,
+                            color = TesterColors.border
+                        ) else Modifier
+                    )
+                    .onClick { onPlatformChange(platform) },
+                contentAlignment = Alignment.Center
+            ) {
+                SpanText(platform.displayName(strings))
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun TestFlaskIcon() {
+    Box(
+        Modifier
+            .borderRadius(100.px)
+            .border(
+                width = 1.px,
+                style = LineStyle.Solid,
+                color = TesterColors.thePriceBlue.copy(alpha = 30)
+            )
+            .size(3.cssRem)
+            .background(TesterColors.thePriceBlue.copy(alpha = 70))
+            .padding(1.cssRem),
+        contentAlignment = Alignment.Center
+    ) {
+        FaFlask(
+            modifier = Modifier.color(TesterColors.thePriceBlue),
+            size = IconSize.LG
+        )
+    }
+}
+
+

@@ -12,7 +12,7 @@ import com.varabyte.kobweb.silk.theme.colors.palette.color
  * @property nearBackground A useful color to apply to a container that should differentiate itself from the background
  *   but just a little.
  */
-class SitePalette(
+/*class SitePalette(
     val nearBackground: Color,
     val cobweb: Color,
     val brand: Brand,
@@ -47,7 +47,7 @@ fun ColorMode.toSitePalette(): SitePalette {
         ColorMode.LIGHT -> SitePalettes.light
         ColorMode.DARK -> SitePalettes.dark
     }
-}
+}*/
 
 @InitSilk
 fun initTheme(ctx: InitSilkContext) {
@@ -55,4 +55,15 @@ fun initTheme(ctx: InitSilkContext) {
     ctx.theme.palettes.light.color = Colors.Black
     ctx.theme.palettes.dark.background = Color.rgb(0x06080B)
     ctx.theme.palettes.dark.color = Colors.White
+}
+
+
+object TesterColors {
+    val background = Color.rgb(0x0A0E1A)        // Dark navy
+    val cardBackground = Color.rgb(0x1A1F2E)    // Card background
+    val inputBackground = Color.rgb(0x0F1419)   // Input fields
+    val border = Color.rgb(0x2A2F3E)            // Borders
+    val textGray = Color.rgb(0x9CA3AF)          // Gray text
+    val lightGray = Color.rgb(0xE5E7EB)
+    val thePriceBlue = Color.rgb(0x459AE5)
 }
