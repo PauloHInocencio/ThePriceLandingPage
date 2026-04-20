@@ -69,11 +69,12 @@ fun HomePage() {
         LanguageStorage.save(currentLanguage)
     }
 
+    val emailRegex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
     val strings = currentLanguage.strings()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
-    val isFormValid = name.isNotBlank() && email.contains("@")
+    val isFormValid = name.isNotBlank() && emailRegex.matches(email)
 
     Box(
         TesterPageStyle.toModifier(),

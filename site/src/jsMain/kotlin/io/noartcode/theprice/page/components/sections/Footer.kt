@@ -50,8 +50,8 @@ fun Footer(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .gap(2.cssRem)
-            .padding(2.cssRem),
+            .gap(0.8.cssRem)
+            .padding(top = 1.cssRem, bottom = 2.cssRem),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Logo
