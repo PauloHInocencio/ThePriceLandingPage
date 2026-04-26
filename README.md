@@ -1,6 +1,7 @@
 # ThePrice Landing Page
 
 Tester registration landing page for **ThePrice**, a cost-of-living tracking application.
+<img width="1140" height="968" alt="Screenshot 2026-04-26 at 10 52 09 AM" src="https://github.com/user-attachments/assets/a0d7b6e7-d5cb-439c-9168-1a7210cc3fb7" />
 
 ## Features
 
