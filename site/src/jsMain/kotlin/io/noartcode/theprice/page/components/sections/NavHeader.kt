@@ -9,11 +9,9 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
-import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
@@ -29,7 +27,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
-import io.noartcode.theprice.page.TesterColors
+import io.noartcode.theprice.page.PageColors
 import io.noartcode.theprice.page.i18n.Language
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -73,7 +71,7 @@ private fun LogoContainer() {
             modifier = Modifier
                 .fontSize(1.5.cssRem)
                 .fontWeight(FontWeight.SemiBold)
-                .color(TesterColors.thePriceBlue)
+                .color(PageColors.thePriceBlue)
         )
     }
 }
@@ -95,7 +93,7 @@ private fun LanguageToggle(
                 lang.displayName,
                 Modifier
                     .displayIfAtLeast(Breakpoint.MD)
-                    .color(if (lang == currentLanguage) TesterColors.thePriceBlue else Colors.Gray)
+                    .color(if (lang == currentLanguage) PageColors.thePriceBlue else Colors.Gray)
                     .cursor(Cursor.Pointer)
                     .onClick { onLanguageChange(lang) }
             )

@@ -1,13 +1,12 @@
 package io.noartcode.theprice.page.api
 
 import io.noartcode.theprice.page.i18n.Platform
-import io.noartcode.theprice.page.models.TesterSignupRequest
-import io.noartcode.theprice.page.models.TesterSignupResponse
+import io.noartcode.theprice.page.api.dto.TesterSignupRequest
+import io.noartcode.theprice.page.api.dto.TesterSignupResponse
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToDynamic
 import org.w3c.fetch.RequestInit
 import kotlin.js.json
 
@@ -42,14 +41,11 @@ class ThePriceApi {
 
             val text = response.text().await()
             val signupResponse = json.decodeFromString<TesterSignupResponse>(text)
-
             if (signupResponse.success) {
                 Result.success(signupResponse)
             } else {
                 Result.failure(Exception(message = signupResponse.message))
             }
-
-
         } catch (e: Exception) {
             Result.failure(e)
         }

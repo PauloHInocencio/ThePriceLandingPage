@@ -18,9 +18,7 @@ import com.varabyte.kobweb.silk.style.addVariant
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.theme.modifyStyleBase
 import com.varabyte.kobweb.compose.css.Transition
-import com.varabyte.kobweb.silk.style.addVariantBase
 import com.varabyte.kobweb.silk.style.animation.Keyframes
-import io.noartcode.theprice.page.PlatformSelectorButtonStyle
 import org.jetbrains.compose.web.css.*
 
 @InitSilk
@@ -55,7 +53,7 @@ val TesterPageStyle = CssStyle.base {
         .fillMaxSize()
         .minHeight(100.vh)
         .minWidth(400.px)
-        .backgroundColor(TesterColors.background)
+        .backgroundColor(PageColors.background)
 }
 
 
@@ -64,10 +62,10 @@ val TesterCardStyle = CssStyle {
         Modifier
             .fillMaxWidth()
             .maxWidth(700.px)
-            .background(TesterColors.cardBackground)
+            .background(PageColors.cardBackground)
             .borderRadius(24.px)
             .padding(3.cssRem)
-            .border(1.px, LineStyle.Solid, TesterColors.border)
+            .border(1.px, LineStyle.Solid, PageColors.border)
     }
 }
 
@@ -78,11 +76,11 @@ val FormInputStyle = CssStyle {
             .maxWidth(500.px)
             .height(3.cssRem)
             .padding(1.cssRem)
-            .backgroundColor(TesterColors.inputBackground)
+            .backgroundColor(PageColors.inputBackground)
             .border(
                 width = 1.px ,
                 style = LineStyle.Solid,
-                color = TesterColors.border
+                color = PageColors.border
             )
             .boxShadow(0.px, 0.px, 0.px, 0.px, null)
             .borderRadius(12.px)
@@ -100,7 +98,22 @@ val BlueButtonVariant = ButtonStyle.addVariant {
             .maxWidth(500.px)
             .padding(1.cssRem)
             .color(Colors.White)
-            .backgroundColor(TesterColors.thePriceBlue)
+            .backgroundColor(PageColors.thePriceBlue)
+            .borderRadius(12.px)
+            .fontSize(1.cssRem)
+            .fontWeight(FontWeight.SemiBold)
+            .cursor(Cursor.Pointer)
+    }
+}
+
+val ErrorButtonVariant = ButtonStyle.addVariant {
+    base {
+        Modifier
+            .height(3.cssRem)
+            .padding(1.cssRem)
+            .color(Colors.White)
+            .textAlign(TextAlign.Center)
+            .backgroundColor(PageColors.errorRedBg.copy(alpha = 95))
             .borderRadius(12.px)
             .fontSize(1.cssRem)
             .fontWeight(FontWeight.SemiBold)
@@ -114,7 +127,7 @@ val PlatformSelectorContainerStyle = CssStyle.base {
         .maxWidth(500.px)
         .display(DisplayStyle.Flex)
         .borderRadius(12.px)
-        .border(width = 1.px, style = LineStyle.Solid, TesterColors.border)
+        .border(width = 1.px, style = LineStyle.Solid, PageColors.border)
         .overflow(Overflow.Hidden)
 }
 
@@ -124,8 +137,8 @@ val PlatformSelectorButtonStyle = CssStyle {
             .flex(1)
             .height(3.cssRem)
             .padding(1.cssRem)
-            .backgroundColor(TesterColors.inputBackground)
-            .color(TesterColors.textGray)
+            .backgroundColor(PageColors.inputBackground)
+            .color(PageColors.textGray)
             .fontSize(1.cssRem)
             .fontWeight(FontWeight.Medium)
             .textAlign(TextAlign.Center)
@@ -141,7 +154,7 @@ val PlatformSelectorButtonStyle = CssStyle {
 
 val PlatformSelectedVariant = CssStyle.base {
     Modifier
-        .backgroundColor(TesterColors.thePriceBlue)
+        .backgroundColor(PageColors.thePriceBlue)
         .color(Colors.White)
 }
 

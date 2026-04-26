@@ -1,4 +1,4 @@
-package io.noartcode.theprice.page.models
+package io.noartcode.theprice.page.api.dto
 
 import kotlinx.serialization.Serializable
 

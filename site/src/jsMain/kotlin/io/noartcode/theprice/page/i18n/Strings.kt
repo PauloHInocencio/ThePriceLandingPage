@@ -13,6 +13,11 @@ sealed class Strings {
     abstract val platformBoth: String
     abstract val copyrightText: String
     abstract val madeWithKobweb:String
+    abstract val successTitle: String
+    abstract val errorTitle: String
+    abstract val tryAgainButton: String
+    abstract val defaultErrorMessage: String
+    abstract val successMessage: String
 
     data object English : Strings() {
         override val becomeATester = "Become a tester"
@@ -27,6 +32,11 @@ sealed class Strings {
         override val platformBoth = "Both"
         override val copyrightText = "Copyright © 2026 NOARTCODE LTDA. All Rights Reserved."
         override val madeWithKobweb = "Website built with"
+        override val successTitle = "Success!"
+        override val errorTitle = "Error"
+        override val tryAgainButton = "Try Again"
+        override val defaultErrorMessage = "Something went wrong. Please try again."
+        override val successMessage: String = "Done. You've been added as a tester. You'll receive an email from us when a new version is available to try."
     }
 
     data object PortugueseBR : Strings() {
@@ -42,5 +52,10 @@ sealed class Strings {
         override val platformBoth = "Ambos"
         override val copyrightText = "Copyright © 2026 NOARTCODE LTDA. Todos os Direitos Reservados."
         override val madeWithKobweb = "Website feito com"
+        override val successTitle = "Sucesso!"
+        override val errorTitle = "Erro"
+        override val tryAgainButton = "Tentar Novamente"
+        override val defaultErrorMessage = "Algo deu errado. Por favor, tente novamente."
+        override val successMessage: String = "Pronto. Você foi adicionado como testador. Você receberá um e-mail nosso quando uma nova versão estiver disponível para teste."
     }
 }

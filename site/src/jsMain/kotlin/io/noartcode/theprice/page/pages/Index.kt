@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
@@ -26,6 +27,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
+import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.icons.fa.FaFlask
@@ -37,18 +39,23 @@ import io.noartcode.theprice.page.PlatformSelectedVariant
 import io.noartcode.theprice.page.PlatformSelectorButtonStyle
 import io.noartcode.theprice.page.PlatformSelectorContainerStyle
 import io.noartcode.theprice.page.TesterCardStyle
-import io.noartcode.theprice.page.TesterColors
+import io.noartcode.theprice.page.PageColors
 import io.noartcode.theprice.page.TesterPageStyle
 import io.noartcode.theprice.page.api.ThePriceApi
 import io.noartcode.theprice.page.components.sections.Footer
 import io.noartcode.theprice.page.components.sections.NavHeader
+import io.noartcode.theprice.page.components.widget.ErrorButton
+import io.noartcode.theprice.page.components.widget.ErrorIcon
 import io.noartcode.theprice.page.components.widget.LoadingButton
+import io.noartcode.theprice.page.components.widget.SuccessIcon
+import io.noartcode.theprice.page.components.widget.TestFlaskIcon
 import io.noartcode.theprice.page.i18n.Language
 import io.noartcode.theprice.page.i18n.LanguageStorage
 import io.noartcode.theprice.page.i18n.Platform
 import io.noartcode.theprice.page.i18n.Strings
 import io.noartcode.theprice.page.i18n.displayName
 import io.noartcode.theprice.page.i18n.strings
+import io.noartcode.theprice.page.pages.state.SubmissionState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
@@ -75,10 +82,9 @@ fun HomePage() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
-    var isSubmitting by remember { mutableStateOf(false) }
+    var submissionState by remember { mutableStateOf<SubmissionState>(SubmissionState.Error)}
+    val isSubmitting = submissionState is SubmissionState.Submitting
     val isSubmissionEnabled = name.isNotBlank() && emailRegex.matches(email) && !isSubmitting
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
 
     Box(
         TesterPageStyle.toModifier(),
@@ -89,37 +95,58 @@ fun HomePage() {
                 currentLanguage = currentLanguage,
                 onLanguageChange = { currentLanguage = it }
             )
-            TesterForm(
-                strings = strings,
-                selectedPlatform = selectedPlatform,
-                onPlatformChange = { selectedPlatform = it },
-                name = name,
-                onNameChange = { name = it },
-                email = email,
-                onEmailChange = { email = it },
-                isSubmissionEnabled = isSubmissionEnabled,
-                onSubmit = {
-                    MainScope().launch {
-                        isSubmitting = true
-                        val result = api.submitTesterSignup(
-                            email = email,
-                            name = name,
-                            platform = selectedPlatform
-                        )
+            when (submissionState){
+                is SubmissionState.Idle, is SubmissionState.Submitting  -> {
+                    TesterForm(
+                        strings = strings,
+                        selectedPlatform = selectedPlatform,
+                        onPlatformChange = { selectedPlatform = it },
+                        name = name,
+                        onNameChange = { name = it },
+                        email = email,
+                        onEmailChange = { email = it },
+                        isSubmissionEnabled = isSubmissionEnabled,
+                        onSubmit = {
+                            MainScope().launch {
+                                submissionState = SubmissionState.Submitting
+                                val result = api.submitTesterSignup(
+                                    email = email,
+                                    name = name,
+                                    platform = selectedPlatform
+                                )
 
-                        result.fold(
-                            onSuccess = {
-                                isSubmitting = false
-                            },
-                            onFailure = { e ->
-                                isSubmitting = false
-                                errorMessage = e.message ?: "Something went wrong!"
+                                result.fold(
+                                    onSuccess = { response ->
+                                        println("Success message: ${response.message}")
+                                        submissionState = SubmissionState.Success
+                                    },
+                                    onFailure = { e ->
+                                        println("Error message: ${e.message}")
+                                        submissionState = SubmissionState.Error
+                                    }
+                                )
                             }
-                        )
-                    }
-                },
-                isSubmitting = isSubmitting
-            )
+                        },
+                        isSubmitting = isSubmitting
+                    )
+                }
+                is SubmissionState.Success -> {
+                    StatusCard(
+                        isSuccess = true,
+                        strings = strings,
+                    )
+                }
+                is SubmissionState.Error -> {
+                    StatusCard(
+                        isSuccess = false,
+                        strings = strings,
+                        onTryAgain = {
+                            submissionState = SubmissionState.Idle
+                        }
+                    )
+                }
+            }
+
             Footer(
                 strings = strings
             )
@@ -164,7 +191,7 @@ private fun ColumnScope.TesterForm(
 
             SpanText(
                 strings.signUpDescription,
-                Modifier.color(TesterColors.textGray)
+                Modifier.color(PageColors.textGray)
             )
 
             Column(
@@ -228,7 +255,7 @@ private fun PlatformSelector(
                         .border(
                             width = 1.px,
                             style = LineStyle.Solid,
-                            color = TesterColors.border
+                            color = PageColors.border
                         ) else Modifier
                     )
                     .onClick { onPlatformChange(platform) },
@@ -240,27 +267,55 @@ private fun PlatformSelector(
     }
 }
 
-
 @Composable
-private fun TestFlaskIcon() {
+private fun ColumnScope.StatusCard(
+    isSuccess: Boolean,
+    strings: Strings,
+    onTryAgain : () -> Unit = {}
+) {
     Box(
-        Modifier
-            .borderRadius(50.px)
-            .border(
-                width = 1.px,
-                style = LineStyle.Solid,
-                color = TesterColors.thePriceBlue.copy(alpha = 30)
-            )
-            .size(3.cssRem)
-            .background(TesterColors.thePriceBlue.copy(alpha = 70))
-            .padding(1.cssRem),
+        Modifier.fillMaxWidth()
+            .weight(1)
+            .padding(2.cssRem),
         contentAlignment = Alignment.Center
     ) {
-        FaFlask(
-            modifier = Modifier.color(TesterColors.thePriceBlue),
-            size = IconSize.LG
-        )
+        Column(
+            TesterCardStyle.toModifier()
+                .background(PageColors.errorRedBg.copy(alpha = 30))
+                .gap(2.cssRem),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                Modifier.gap(1.cssRem),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if  (isSuccess) SuccessIcon() else ErrorIcon()
+                SpanText(
+                    text = if (isSuccess) strings.successTitle else strings.errorTitle,
+                    Modifier
+                        .fontSize(1.5.cssRem)
+                        .fontWeight(FontWeight.Bold)
+                        .color(if (isSuccess) PageColors.successGreen else PageColors.errorRed)
+                )
+            }
+
+            SpanText(
+                if (isSuccess) strings.successMessage else strings.defaultErrorMessage,
+                Modifier
+                    .color(
+                        if (isSuccess) PageColors.successGreen
+                        else PageColors.errorRed
+                    )
+                    .textAlign(TextAlign.Center)
+            )
+
+            if (!isSuccess) {
+                ErrorButton(
+                    text = strings.tryAgainButton,
+                    onClick = onTryAgain
+                )
+            }
+        }
     }
 }
-
 

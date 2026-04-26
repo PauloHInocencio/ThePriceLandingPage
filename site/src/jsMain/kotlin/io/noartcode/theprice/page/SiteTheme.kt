@@ -4,50 +4,8 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.color
-
-/**
- * @property nearBackground A useful color to apply to a container that should differentiate itself from the background
- *   but just a little.
- */
-/*class SitePalette(
-    val nearBackground: Color,
-    val cobweb: Color,
-    val brand: Brand,
-) {
-    class Brand(
-        val primary: Color = Color.rgb(0x3C83EF),
-        val accent: Color = Color.rgb(0xF3DB5B),
-    )
-}
-
-object SitePalettes {
-    val light = SitePalette(
-        nearBackground = Color.rgb(0xF4F6FA),
-        cobweb = Colors.LightGray,
-        brand = SitePalette.Brand(
-            primary = Color.rgb(0x3C83EF),
-            accent = Color.rgb(0xFCBA03),
-        )
-    )
-    val dark = SitePalette(
-        nearBackground = Color.rgb(0x13171F),
-        cobweb = Colors.LightGray.inverted(),
-        brand = SitePalette.Brand(
-            primary = Color.rgb(0x3C83EF),
-            accent = Color.rgb(0xF3DB5B),
-        )
-    )
-}
-
-fun ColorMode.toSitePalette(): SitePalette {
-    return when (this) {
-        ColorMode.LIGHT -> SitePalettes.light
-        ColorMode.DARK -> SitePalettes.dark
-    }
-}*/
 
 @InitSilk
 fun initTheme(ctx: InitSilkContext) {
@@ -58,7 +16,7 @@ fun initTheme(ctx: InitSilkContext) {
 }
 
 
-object TesterColors {
+object PageColors {
     val background = Color.rgb(0x0A0E1A)        // Dark navy
     val cardBackground = Color.rgb(0x1A1F2E)    // Card background
     val inputBackground = Color.rgb(0x0F1419)   // Input fields
@@ -66,4 +24,8 @@ object TesterColors {
     val textGray = Color.rgb(0x9CA3AF)          // Gray text
     val lightGray = Color.rgb(0xE5E7EB)
     val thePriceBlue = Color.rgb(0x459AE5)
+    val successGreen = Color.rgb(0x22C55E)
+    val successGreenBg = Color.rgb(0x166534)
+    val errorRed = Color.rgb(0xEF4444)
+    val errorRedBg = Color.rgb(0x991B1B)
 }
