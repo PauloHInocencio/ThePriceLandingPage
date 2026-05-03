@@ -16,7 +16,8 @@ class ThePriceApi {
         isLenient = true
     }
 
-    private val baseUrl = "https://noartcode.io/apps/theprice/testers/api"
+    //private val baseUrl = "https://noartcode.io/apps/theprice/testers/api"
+    private val baseUrl = "http://localhost:8080/api/v1"
 
     suspend fun submitTesterSignup(
         email: String,
@@ -31,7 +32,7 @@ class ThePriceApi {
         )
         return try {
             val response = window.fetch(
-                input = "$baseUrl/signup",
+                input = "$baseUrl/testers/signup",
                 init = RequestInit(
                     method = "POST",
                     headers = json("Content-type" to "application/json"),

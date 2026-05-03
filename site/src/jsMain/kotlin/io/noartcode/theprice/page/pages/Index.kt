@@ -82,7 +82,7 @@ fun HomePage() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var selectedPlatform by remember { mutableStateOf<Platform>(Platform.Android) }
-    var submissionState by remember { mutableStateOf<SubmissionState>(SubmissionState.Error)}
+    var submissionState by remember { mutableStateOf<SubmissionState>(SubmissionState.Idle)}
     val isSubmitting = submissionState is SubmissionState.Submitting
     val isSubmissionEnabled = name.isNotBlank() && emailRegex.matches(email) && !isSubmitting
 
