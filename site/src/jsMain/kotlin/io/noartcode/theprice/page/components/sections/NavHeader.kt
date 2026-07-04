@@ -28,7 +28,7 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import io.noartcode.theprice.page.PageColors
-import io.noartcode.theprice.page.i18n.Language
+import io.noartcode.theprice.page.models.Language
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 

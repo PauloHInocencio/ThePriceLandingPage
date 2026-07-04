@@ -5,6 +5,7 @@ import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
@@ -18,6 +19,7 @@ import com.varabyte.kobweb.silk.style.addVariant
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.theme.modifyStyleBase
 import com.varabyte.kobweb.compose.css.Transition
+import com.varabyte.kobweb.compose.css.WhiteSpace
 import com.varabyte.kobweb.silk.style.animation.Keyframes
 import org.jetbrains.compose.web.css.*
 
@@ -165,4 +167,97 @@ val SpinKeyframes = Keyframes {
     to {
         Modifier.rotate(360.deg)
     }
+}
+
+
+val TesterListItemStyle = CssStyle {
+    base {
+        Modifier
+            .fillMaxWidth()
+            .padding(topBottom = 0.75.cssRem, leftRight = 1.cssRem)
+            .borderBottom(1.px, LineStyle.Solid, PageColors.border)
+            .backgroundColor(PageColors.cardBackground)
+            .transition(
+                Transition.of(property = "background-color", duration = 0.2.s)
+            )
+    }
+
+    cssRule(":hover") {
+        Modifier.backgroundColor(PageColors.inputBackground)
+    }
+}
+
+val TesterListHeaderStyle = CssStyle.base {
+    Modifier
+        .fillMaxWidth()
+        .padding(topBottom = 1.cssRem, leftRight = 1.cssRem)
+        .backgroundColor(PageColors.inputBackground)
+        .borderBottom(2.px, LineStyle.Solid, PageColors.thePriceBlue)
+        .fontWeight(FontWeight.SemiBold)
+        .fontSize(0.9.cssRem)
+        .color(PageColors.lightGray)
+}
+
+val StatusBadgeStyle = CssStyle.base {
+    Modifier
+        .minWidth(80.px)
+        .maxWidth(100.px)
+        .padding(topBottom = 0.25.cssRem, leftRight = 0.5.cssRem)
+        .borderRadius(12.px)
+        .gap(0.3.cssRem)
+}
+
+val ActionButtonStyle = CssStyle {
+    base {
+        Modifier
+            .size(32.px)
+            .borderRadius(6.px)
+            .backgroundColor(PageColors.inputBackground)
+            .cursor(Cursor.Pointer)
+            .transition(
+                listOf(
+                    Transition.of(property = "background-color", duration = 0.2.s),
+                    Transition.of(property = "transform", duration = 0.1.s)
+                )
+            )
+    }
+
+    cssRule(":hover") {
+        Modifier
+            .backgroundColor(PageColors.border)
+            .scale(1.05)
+    }
+
+    cssRule(":active") {
+        Modifier.scale(0.95)
+    }
+}
+
+val TestersListContainerStyle = CssStyle.base {
+    Modifier
+        .fillMaxWidth()
+        .maxWidth(1200.px)
+        .background(PageColors.cardBackground)
+        .borderRadius(16.px)
+        .border(1.px, LineStyle.Solid, PageColors.border)
+        .overflow(Overflow.Hidden)
+}
+
+val TesterListItemSpanTextStyle = CssStyle.base {
+    Modifier
+        .minWidth(200.px)
+        .maxWidth(250.px)
+        .overflow(Overflow.Hidden)
+        .textOverflow(TextOverflow.Ellipsis)
+        .whiteSpace(WhiteSpace.NoWrap)
+        .fontSize(0.9.cssRem)
+        .color(Colors.White)
+}
+
+val EmptyStateStyle = CssStyle.base {
+    Modifier
+        .fillMaxWidth()
+        .padding(4.cssRem, 2.cssRem)
+        .gap(1.5.cssRem)
+        .textAlign(TextAlign.Center)
 }

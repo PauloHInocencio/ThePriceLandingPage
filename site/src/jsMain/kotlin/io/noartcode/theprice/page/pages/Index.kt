@@ -17,7 +17,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.border
-import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -26,12 +25,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
-import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.icons.fa.FaFlask
-import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.toModifier
 import io.noartcode.theprice.page.FormInputStyle
@@ -49,13 +45,12 @@ import io.noartcode.theprice.page.components.widget.ErrorIcon
 import io.noartcode.theprice.page.components.widget.LoadingButton
 import io.noartcode.theprice.page.components.widget.SuccessIcon
 import io.noartcode.theprice.page.components.widget.TestFlaskIcon
-import io.noartcode.theprice.page.i18n.Language
+import io.noartcode.theprice.page.models.Language
 import io.noartcode.theprice.page.i18n.LanguageStorage
-import io.noartcode.theprice.page.i18n.Platform
+import io.noartcode.theprice.page.models.Platform
 import io.noartcode.theprice.page.i18n.Strings
-import io.noartcode.theprice.page.i18n.displayName
-import io.noartcode.theprice.page.i18n.strings
-import io.noartcode.theprice.page.pages.state.SubmissionState
+import io.noartcode.theprice.page.models.displayName
+import io.noartcode.theprice.page.models.strings
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
@@ -64,6 +59,13 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Input
+
+sealed interface SubmissionState {
+    data object Idle : SubmissionState
+    data object Submitting : SubmissionState
+    data object Success : SubmissionState
+    data object Error : SubmissionState
+}
 
 @Page
 @Composable

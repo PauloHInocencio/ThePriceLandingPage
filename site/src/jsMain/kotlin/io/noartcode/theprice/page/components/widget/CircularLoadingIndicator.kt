@@ -14,17 +14,20 @@ import com.varabyte.kobweb.silk.style.animation.toAnimation
 import io.noartcode.theprice.page.PageColors
 import io.noartcode.theprice.page.SpinKeyframes
 import org.jetbrains.compose.web.css.AnimationTimingFunction
+import org.jetbrains.compose.web.css.CSSNumericValue
+import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.s
 
 @Composable
 fun CircularLoadingIndicator(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    size: Int = 24,
 ) {
     Box(
         modifier
-            .size(24.px)
+            .size(size.px)
             .borderRadius(50.px)
             .border(
                 width = 3.px,

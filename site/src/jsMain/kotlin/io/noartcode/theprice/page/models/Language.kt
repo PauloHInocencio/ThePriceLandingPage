@@ -1,4 +1,6 @@
-package io.noartcode.theprice.page.i18n
+package io.noartcode.theprice.page.models
+
+import io.noartcode.theprice.page.i18n.Strings
 
 sealed class Language(val code: String, val displayName: String, val flag: String) {
     data object PortugueseBR : Language("pt-BR", "Português", "🇧🇷")

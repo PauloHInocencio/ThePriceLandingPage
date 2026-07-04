@@ -1,5 +1,6 @@
 package io.noartcode.theprice.page.i18n
 
+import io.noartcode.theprice.page.models.Language
 import kotlinx.browser.localStorage
 
 private const val LANGUAGE_KEY = "page:language"
