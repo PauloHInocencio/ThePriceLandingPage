@@ -7,6 +7,7 @@ import io.noartcode.theprice.page.api.dto.TesterSignupRequest
 import io.noartcode.theprice.page.api.dto.TesterSignupResponse
 import io.noartcode.theprice.page.api.dto.TestersResponse
 import io.noartcode.theprice.page.api.exception.UnauthorizedException
+import io.noartcode.theprice.page.BuildKonfig
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.serialization.encodeToString
@@ -23,10 +24,10 @@ class ThePriceApi {
         isLenient = true
     }
 
-    //private val baseUrl = "https://noartcode.io/apps/theprice/testers/api"
-    private val baseUrl = "http://localhost:8080/api/v1"
+    private val baseUrl = BuildKonfig.API_BASE_URL
 
     suspend fun submitTesterSignup(email: String, name: String, platform: Platform) : Result<TesterSignupResponse>  {
+        println("BASE URL: $baseUrl")
         val request = TesterSignupRequest(
             email = email,
             name = name,

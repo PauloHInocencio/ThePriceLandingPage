@@ -1,0 +1,8 @@
+# API Configuration
+# Copy this file to local.properties and fill in your actual API base URL
+
+# Backend API base URL (no trailing slash)
+# Examples:
+#   Development: http://localhost:8081
+#   Production:  https://api.theprice.app
+API_BASE_URL=https://your-api-url-here.com

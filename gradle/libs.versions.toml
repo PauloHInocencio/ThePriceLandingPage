@@ -4,6 +4,7 @@ compose-runtime = "1.10.2"
 kobweb = "0.24.0"
 kotlin = "2.3.10"
 kotlinx-serialization = "1.6.2"
+buildkonfig = "0.15.2"
 
 [libraries]
 compose-html-core = { module = "org.jetbrains.compose.html:html-core", version.ref = "compose-html" }
@@ -29,3 +30,4 @@ kobweb-worker = { id = "com.varabyte.kobweb.worker", version.ref = "kobweb" }
 kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }

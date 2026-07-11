@@ -1,0 +1,53 @@
+# Build artifacts
+build/
+out/
+.gradle/
+.kotlin/
+kotlin-js-store/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.DS_Store
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+CLAUDE.md
+docs/
+README.md
+
+# Generated outputs (will be regenerated)
+.kobweb/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Test files
+**/test/
+**/*test.kt
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+*~

@@ -1,4 +1,7 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.util.Properties
+import java.io.File
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -6,10 +9,46 @@ plugins {
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildkonfig)
 }
 
 group = "io.noartcode.theprice.page"
 version = "1.0-SNAPSHOT"
+
+// Read local.properties from project root
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (!localPropertiesFile.exists()) {
+    throw GradleException(
+        """
+        Missing local.properties file!
+
+        Create local.properties in project root with:
+        API_BASE_URL=https://your-api-url.com
+
+        See local.properties.example for template.
+        """.trimIndent()
+    )
+}
+
+// Parse properties file manually
+val localProperties = localPropertiesFile.readLines()
+    .filter { it.isNotBlank() && !it.trim().startsWith("#") }
+    .associate { line ->
+        val parts = line.split("=", limit = 2)
+        if (parts.size == 2) {
+            parts[0].trim() to parts[1].trim()
+        } else {
+            "" to ""
+        }
+    }
+
+val apiBaseUrl = localProperties["API_BASE_URL"]
+    ?: throw GradleException("API_BASE_URL not found in local.properties")
+
+if (apiBaseUrl.isBlank()) {
+    throw GradleException("API_BASE_URL in local.properties cannot be blank")
+}
 
 kobweb {
     app {
@@ -47,5 +86,13 @@ kotlin {
 //        jvmMain.dependencies {
 //            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
 //        }
+    }
+}
+
+buildkonfig {
+    packageName = "io.noartcode.theprice.page"
+
+    defaultConfigs {
+        buildConfigField(STRING, "API_BASE_URL", apiBaseUrl)
     }
 }
