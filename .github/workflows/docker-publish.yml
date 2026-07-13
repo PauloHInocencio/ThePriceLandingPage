@@ -29,6 +29,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: paulohinocencio/theprice-landing-page:latest
+          tags: hinocenciopaulo/theprice-landing-page:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
