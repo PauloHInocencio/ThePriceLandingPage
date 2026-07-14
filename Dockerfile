@@ -17,11 +17,16 @@ RUN apt-get update && apt-get install -y curl unzip && \
 # Set working directory
 WORKDIR /app
 
+# API_BASE_URL is passed as a build arg (see docker-compose.yml `args`) rather than
+# copied from local.properties, since that file is gitignored and unavailable to CI/Dokploy builds.
+ARG API_BASE_URL
+RUN test -n "$API_BASE_URL" || (echo "ERROR: API_BASE_URL build arg is required" && exit 1)
+
 # Copy gradle wrapper and dependency files first (for better layer caching latter)
 # FYI: Docker builds images in layers. Each instruction (COPY, RUN, etc.) creates a layer that Docker caches.
 COPY gradle gradle
 COPY gradlew gradlew.bat settings.gradle.kts gradle.properties ./
-COPY local.properties ./
+RUN echo "API_BASE_URL=$API_BASE_URL" > local.properties
 
 # Copy site directory with build configuration
 COPY site/build.gradle.kts site/
